@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://UI.gd" type="Script" id=1]
+[ext_resource path="res://art/options icon.png" type="Texture" id=2]
+
+[node name="UI" type="Node"]
+script = ExtResource( 1 )
+
+[node name="VSlider" type="VSlider" parent="."]
+margin_left = 33.0
+margin_top = 2.0
+margin_right = 49.0
+margin_bottom = 44.0
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 8, 21 )
+min_value = 1.0
+value = 1.0
+exp_edit = true
+
+[node name="MenuButton" type="MenuButton" parent="."]
+margin_right = 12.0
+margin_bottom = 20.0
+icon = ExtResource( 2 )
+switch_on_hover = true
+
+[connection signal="value_changed" from="VSlider" to="." method="_on_VSlider_value_changed"]

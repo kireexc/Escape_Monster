@@ -1,0 +1,91 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://art/player-walk.png" type="Texture" id=2]
+[ext_resource path="res://art/player-up.png" type="Texture" id=3]
+[ext_resource path="res://art/HitPunch.mp3" type="AudioStream" id=6]
+[ext_resource path="res://art/shield.png" type="Texture" id=7]
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 57, 52 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 57, 0, 57, 52 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 114, 0, 57, 52 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 1, 0, 52, 52 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 58, 0, 52, 52 )
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
+"loop": true,
+"name": "right",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "up",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 25.0
+height = 4.0
+
+[node name="Player" type="Area2D"]
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0.161059, -1.5 )
+scale = Vector2( 1.0232, 1.05769 )
+frames = SubResource( 1 )
+animation = "right"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="hit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="BulletNode" type="Node2D" parent="."]
+
+[node name="Position2D" type="Position2D" parent="BulletNode"]
+position = Vector2( 70, 0 )
+
+[node name="Shield" type="Sprite" parent="."]
+texture = ExtResource( 7 )
+centered = false
+offset = Vector2( -57, 0 )
+
+[node name="ShieldArea" type="Area2D" parent="Shield"]
+position = Vector2( 0, 57 )
+
+[node name="ShieldCollision" type="CollisionPolygon2D" parent="Shield/ShieldArea"]
+polygon = PoolVector2Array( 42, -19, 46, -8, 46, 4, 43, 16, 36, 26, 21, 36, 5, 40, -8, 39, -23, 34, -34, 25, -42, 13, -45, 0, -44, -12, -41, -4, -36, 3, -25, 14, -17, 20, -7, 24, 8, 24, 19, 18, 28, 11, 36, 1, 40, -9 )
+
+[node name="ImmunityTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_Player_body_entered"]
+[connection signal="body_entered" from="Shield/ShieldArea" to="." method="_on_ShieldArea_body_entered"]
+[connection signal="timeout" from="ImmunityTimer" to="." method="_on_ImmunityTimer_timeout"]

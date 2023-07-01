@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/HitPunch.mp3-df6c71eb97b8cbbbeab344eec3ac58ac.mp3str"
+
+[deps]
+
+source_file="res://art/HitPunch.mp3"
+dest_files=[ "res://.import/HitPunch.mp3-df6c71eb97b8cbbbeab344eec3ac58ac.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

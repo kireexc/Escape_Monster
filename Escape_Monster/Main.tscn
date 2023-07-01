@@ -1,0 +1,90 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://Mob.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://HUD.tscn" type="PackedScene" id=4]
+[ext_resource path="res://art/beat-tune-abysses.wav" type="AudioStream" id=5]
+[ext_resource path="res://art/game-over.wav" type="AudioStream" id=6]
+[ext_resource path="res://LootBox.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Game.gd" type="Script" id=8]
+[ext_resource path="res://art/wasd-keys.png" type="Texture" id=9]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1280, 0, 0, 0, 0, 0, 1280, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0 )
+}
+
+[node name="Main" type="Node"]
+script = ExtResource( 1 )
+
+[node name="Game" type="Node" parent="."]
+script = ExtResource( 8 )
+mob_scene = ExtResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="Game"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.192157, 0.282353, 0.52549, 1 )
+
+[node name="Player" parent="Game" instance=ExtResource( 3 )]
+
+[node name="MobTimer" type="Timer" parent="Game"]
+
+[node name="ScoreTimer" type="Timer" parent="Game"]
+
+[node name="StartTimer" type="Timer" parent="Game"]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Position2D" parent="Game"]
+position = Vector2( 640, 360 )
+__meta__ = {
+"_gizmo_extents_": 0.0
+}
+
+[node name="MobPath" type="Path2D" parent="Game"]
+curve = SubResource( 1 )
+
+[node name="MobSpawnLocation" type="PathFollow2D" parent="Game/MobPath"]
+
+[node name="HUD" parent="Game" instance=ExtResource( 4 )]
+
+[node name="DefaultIntruct" type="Sprite" parent="Game"]
+z_index = 1
+texture = ExtResource( 9 )
+
+[node name="Music" type="AudioStreamPlayer" parent="Game"]
+stream = ExtResource( 5 )
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="Game"]
+stream = ExtResource( 6 )
+
+[node name="LootBox" parent="." instance=ExtResource( 7 )]
+
+[connection signal="game_over" from="." to="Game" method="_on_Main_game_over"]
+[connection signal="game_over" from="." to="Game/Player" method="_on_game_over"]
+[connection signal="game_over" from="." to="Game/HUD" method="_on_game_over"]
+[connection signal="slowmo_text_change" from="Game" to="Game/HUD" method="_on_Game_slowmo_text_change"]
+[connection signal="item_rect_changed" from="Game/ColorRect" to="Game" method="_on_ColorRect_item_rect_changed"]
+[connection signal="gun_text_change" from="Game/Player" to="Game/HUD" method="_on_Player_gun_text_change"]
+[connection signal="hit" from="Game/Player" to="Game/HUD" method="_on_Player_hit"]
+[connection signal="life_up" from="Game/Player" to="Game/HUD" method="_on_Player_life_up"]
+[connection signal="player_died" from="Game/Player" to="." method="game_over"]
+[connection signal="shield_text_change" from="Game/Player" to="Game/HUD" method="_on_Player_shield_text_change"]
+[connection signal="timeout" from="Game/MobTimer" to="Game" method="_on_MobTimer_timeout"]
+[connection signal="timeout" from="Game/ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+[connection signal="timeout" from="Game/StartTimer" to="." method="_on_StartTimer_timeout"]
+[connection signal="bomb" from="Game/HUD" to="LootBox" method="_on_HUD_bomb"]
+[connection signal="gun" from="Game/HUD" to="Game/Player" method="_on_HUD_gun"]
+[connection signal="gun" from="Game/HUD" to="LootBox" method="_on_HUD_gun"]
+[connection signal="life_up" from="Game/HUD" to="Game/Player" method="_on_HUD_life_up"]
+[connection signal="shield" from="Game/HUD" to="Game/Player" method="_on_HUD_shield"]
+[connection signal="shield" from="Game/HUD" to="LootBox" method="_on_HUD_shield"]
+[connection signal="slowmo" from="Game/HUD" to="Game" method="_on_HUD_slowmo"]
+[connection signal="slowmo" from="Game/HUD" to="LootBox" method="_on_HUD_slowmo"]
+[connection signal="speed_up" from="Game/HUD" to="Game/Player" method="_on_HUD_speed_up"]
+[connection signal="speed_up" from="Game/HUD" to="LootBox" method="_on_HUD_speed_up"]
+[connection signal="start_game" from="Game/HUD" to="." method="new_game"]
+[connection signal="start_game" from="Game/HUD" to="LootBox" method="_on_HUD_start_game"]
+[connection signal="powerUp_reward" from="LootBox" to="Game/HUD" method="_on_LootBox_powerUp_reward"]
